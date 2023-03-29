@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 
 namespace DbfDataReader
@@ -12,5 +13,6 @@ namespace DbfDataReader
 
         public bool SkipDeletedRecords { get; set; }
         public Encoding Encoding { get; set; }
+        public Type CustomMemoType { get; set; }
     }
 }

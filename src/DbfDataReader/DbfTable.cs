@@ -9,12 +9,13 @@ namespace DbfDataReader
     {
         private const byte Terminator = 0x0d;
 
-        public DbfTable(string path, Encoding encoding = null)
+        public DbfTable(string path, Encoding encoding = null, Type customMemoType = null)
         {
             if (!File.Exists(path)) throw new FileNotFoundException();
 
             Path = path;
             CurrentEncoding = encoding;
+            CustomMemoType = customMemoType;
 
             // https://stackoverflow.com/questions/23559452/stream-reader-process-cannot-access-file-because-its-in-use-by-another-process
             File.SetAttributes(path, FileAttributes.Normal);
@@ -26,15 +27,16 @@ namespace DbfDataReader
             if (!string.IsNullOrEmpty(memoPath)) Memo = CreateMemo(memoPath);
         }
 
-        public DbfTable(Stream stream, Encoding encoding = null)
-            : this(stream, null, encoding)
+        public DbfTable(Stream stream, Encoding encoding = null, Type customMemoType = null)
+            : this(stream, null, encoding, customMemoType)
         {
         }
 
-        public DbfTable(Stream stream, Stream memoStream, Encoding encoding = null)
+        public DbfTable(Stream stream, Stream memoStream, Encoding encoding = null, Type customMemoType = null)
         {
             Path = string.Empty;
             CurrentEncoding = encoding;
+            CustomMemoType = customMemoType;
             Stream = stream;
 
             Init();
@@ -53,6 +55,8 @@ namespace DbfDataReader
         public string Path { get; }
 
         public Encoding CurrentEncoding { get; private set; }
+        
+        public Type CustomMemoType { get; }
 
         public DbfHeader Header { get; private set; }
 
@@ -104,6 +108,11 @@ namespace DbfDataReader
         public DbfMemo CreateMemo(Stream memoStream)
         {
             DbfMemo memo;
+
+            if (CustomMemoType != null)
+            {
+                return (DbfMemo)Activator.CreateInstance(CustomMemoType, memoStream);
+            }
 
             if (Header.IsFoxPro)
             {

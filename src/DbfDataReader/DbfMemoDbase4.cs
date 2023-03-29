@@ -17,7 +17,7 @@ namespace DbfDataReader
         {
         }
 
-        public override string BuildMemo(long startBlock)
+        public override byte[] BuildMemo(long startBlock)
         {
             return null;
         }

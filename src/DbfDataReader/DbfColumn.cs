@@ -85,7 +85,7 @@ namespace DbfDataReader
                 case DbfColumnType.Boolean:
                     return typeof(bool);
                 case DbfColumnType.Memo:
-                    return typeof(string);
+                    return typeof(byte[]);
                 case DbfColumnType.Double:
                     return typeof(double);
                 case DbfColumnType.General:

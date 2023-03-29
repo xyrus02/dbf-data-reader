@@ -17,7 +17,7 @@ namespace DbfDataReader
         {
         }
 
-        public override string BuildMemo(long startBlock)
+        public override byte[] BuildMemo(long startBlock)
         {
             var offset = Offset(startBlock);
             BinaryReader.BaseStream.Seek(offset, SeekOrigin.Begin);
@@ -44,7 +44,7 @@ namespace DbfDataReader
                 value = value.Substring(0, nullIdx);   // trim off everything past & including the first NUL byte
             }
             value = value.TrimEnd(' ');
-            return value;
+            return this.CurrentEncoding.GetBytes(value);
         }
     }
 }

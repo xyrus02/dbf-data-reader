@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text;
 
@@ -30,7 +31,7 @@ namespace DbfDataReader
             return BinaryReader.ReadBigEndianInt16();
         }
 
-        public override string BuildMemo(long startBlock)
+        public override byte[] BuildMemo(long startBlock)
         {
             var offset = Offset(startBlock);
             BinaryReader.BaseStream.Seek(offset, SeekOrigin.Begin);
@@ -38,7 +39,7 @@ namespace DbfDataReader
             var blockType = BinaryReader.ReadBigEndianInt32();
             var memoLength = BinaryReader.ReadBigEndianInt32();
 
-            if (blockType != 1 || memoLength == 0) return string.Empty;
+            if (blockType != 1 || memoLength == 0) return Array.Empty<byte>();
 
             var value = BinaryReader.ReadString(memoLength, CurrentEncoding);
             if (value != null)
@@ -49,8 +50,8 @@ namespace DbfDataReader
                     value = value.Substring(0, nullIdx);   // trim off everything past & including the first NUL byte
                 }
             }
-            value = value.TrimEnd(' ');
-            return value;
+            value = value?.TrimEnd(' ');
+            return CurrentEncoding.GetBytes(value ?? String.Empty);
         }
     }
 }

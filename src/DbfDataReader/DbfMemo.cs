@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text;
 
@@ -58,11 +59,11 @@ namespace DbfDataReader
             }
         }
 
-        public abstract string BuildMemo(long startBlock);
+        public abstract byte[] BuildMemo(long startBlock);
 
-        public string Get(long startBlock)
+        public byte[] Get(long startBlock)
         {
-            return startBlock <= 0 ? string.Empty : BuildMemo(startBlock);
+            return startBlock <= 0 ? Array.Empty<byte>() : BuildMemo(startBlock);
         }
 
         public long Offset(long startBlock)

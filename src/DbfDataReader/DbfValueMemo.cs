@@ -3,15 +3,18 @@ using System.Text;
 
 namespace DbfDataReader
 {
-    public class DbfValueMemo : DbfValueString
+    public class DbfValueMemo : DbfValue<byte[]>
     {
         private readonly DbfMemo _memo;
 
         public DbfValueMemo(int start, int length, DbfMemo memo, Encoding encoding)
-            : base(start, length, encoding)
+            : base(start, length)
         {
             _memo = memo;
+            Encoding = encoding;
         }
+        
+        protected readonly Encoding Encoding;
 
         public override void Read(ReadOnlySpan<byte> bytes)
         {
@@ -26,7 +29,7 @@ namespace DbfDataReader
 
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    Value = string.Empty;
+                    Value = Array.Empty<byte>();
                 }
                 else
                 {
